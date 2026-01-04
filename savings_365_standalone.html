@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>365天存錢法</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #253854 0%, #1a2940 100%);
+            min-height: 100vh;
+            padding: 15px;
+            padding-bottom: 30px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        h1 {
+            color: #253854;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        
+        .info {
+            background: #fff8f0;
+            border: 2px solid #ffb24d;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .info h3 {
+            font-size: 1.1rem;
+            color: #253854;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info h3:before {
+            content: "💡";
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .info ul {
+            list-style: none;
+            color: #253854;
+            font-size: 0.9rem;
+        }
+        
+        .info li {
+            margin-bottom: 8px;
+            padding-left: 18px;
+            position: relative;
+            line-height: 1.5;
+        }
+        
+        .info li:before {
+            content: "•";
+            color: #ffb24d;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+        
+        .stats {
+            background: linear-gradient(135deg, #ffb24d 0%, #ffa229 100%);
+            border-radius: 12px;
+            padding: 25px 20px;
+            color: #253854;
+            text-align: center;
+        }
+        
+        .stats-label {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .stats-amount {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #253854;
+        }
+        
+        .stats-progress {
+            font-size: 0.9rem;
+            opacity: 0.85;
+        }
+        
+        .days-grid {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            padding: 20px 15px;
+            margin-bottom: 15px;
+        }
+        
+        .grid-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #253854;
+            margin-bottom: 15px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .day-box {
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 8px;
+            background: #f5f5f5;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+            font-size: 0.75rem;
+            padding: 5px;
+            touch-action: manipulation;
+            border: 2px solid transparent;
+        }
+        
+        .day-box:active {
+            transform: scale(0.95);
+        }
+        
+        .day-box:hover {
+            border-color: #ffb24d;
+        }
+        
+        .day-box.checked {
+            background: #ffb24d;
+            color: #253854;
+            font-weight: 600;
+        }
+        
+        .day-label {
+            font-weight: 600;
+            font-size: 0.65rem;
+            line-height: 1.2;
+        }
+        
+        .day-amount {
+            font-size: 0.6rem;
+            margin-top: 2px;
+        }
+        
+        .check-icon {
+            margin-top: 2px;
+            font-size: 0.9rem;
+        }
+        
+        .buttons {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            background: #253854;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            touch-action: manipulation;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+            background: #1a2940;
+        }
+        
+        /* 平板尺寸 */
+        @media (min-width: 600px) {
+            .grid {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 10px;
+            }
+            
+            .day-box {
+                font-size: 0.85rem;
+            }
+            
+            .day-label {
+                font-size: 0.75rem;
+            }
+            
+            .day-amount {
+                font-size: 0.7rem;
+            }
+        }
+        
+        /* 電腦版 */
+        @media (min-width: 1024px) {
+            body {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 30px;
+                margin-bottom: 30px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .info {
+                padding: 25px;
+            }
+            
+            .stats {
+                padding: 30px;
+            }
+            
+            .stats-amount {
+                font-size: 2.5rem;
+            }
+            
+            .days-grid {
+                padding: 30px;
+                margin-bottom: 30px;
+            }
+            
+            .grid {
+                grid-template-columns: repeat(10, 1fr);
+            }
+            
+            .day-box {
+                font-size: 0.85rem;
+            }
+            
+            .day-label {
+                font-size: 0.75rem;
+            }
+            
+            .day-amount {
+                font-size: 0.7rem;
+            }
+            
+            .day-box:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 2px 8px rgba(255, 178, 77, 0.3);
+            }
+            
+            .btn:hover {
+                background: #1a2940;
+                transform: translateY(-2px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>365天存錢法</h1>
+            <p class="subtitle">每天存一點，一年存下 66,795 元！</p>
+            
+            <div class="info">
+                <h3>存錢規則</h3>
+                <ul>
+                    <li>第1天存1元，第2天存2元，依此類推</li>
+                    <li>點擊日期方塊標記為已完成</li>
+                    <li>365天後將存滿 66,795 元</li>
+                    <li>進度會自動儲存，關閉網頁後再開啟仍會保留</li>
+                </ul>
+            </div>
+            
+            <div class="stats">
+                <div class="stats-label">已存金額</div>
+                <div class="stats-amount" id="totalAmount">NT$ 0</div>
+                <div class="stats-progress" id="progress">已完成 0 / 365 天</div>
+            </div>
+        </div>
+        
+        <div class="days-grid">
+            <h2 class="grid-title">存錢進度</h2>
+            <div class="grid" id="daysGrid"></div>
+            <div class="buttons">
+                <button class="btn" onclick="resetAll()">重置所有進度</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 從 localStorage 讀取已儲存的進度
+        let checkedDays = JSON.parse(localStorage.getItem('savings365') || '{}');
+        
+        // 建立365天的方塊
+        function createDaysGrid() {
+            const grid = document.getElementById('daysGrid');
+            for (let day = 1; day <= 365; day++) {
+                const box = document.createElement('button');
+                box.className = 'day-box' + (checkedDays[day] ? ' checked' : '');
+                box.innerHTML = `
+                    <div class="day-label">Day ${day}</div>
+                    <div class="day-amount">$${day}</div>
+                    ${checkedDays[day] ? '<div class="check-icon">✓</div>' : ''}
+                `;
+                box.onclick = () => toggleDay(day, box);
+                grid.appendChild(box);
+            }
+        }
+        
+        // 切換天數的完成狀態
+        function toggleDay(day, element) {
+            checkedDays[day] = !checkedDays[day];
+            
+            if (checkedDays[day]) {
+                element.classList.add('checked');
+                element.innerHTML = `
+                    <div class="day-label">Day ${day}</div>
+                    <div class="day-amount">$${day}</div>
+                    <div class="check-icon">✓</div>
+                `;
+            } else {
+                element.classList.remove('checked');
+                element.innerHTML = `
+                    <div class="day-label">Day ${day}</div>
+                    <div class="day-amount">$${day}</div>
+                `;
+            }
+            
+            // 儲存到 localStorage
+            localStorage.setItem('savings365', JSON.stringify(checkedDays));
+            updateStats();
+        }
+        
+        // 更新統計資料
+        function updateStats() {
+            let total = 0;
+            let completed = 0;
+            
+            for (let day = 1; day <= 365; day++) {
+                if (checkedDays[day]) {
+                    total += day;
+                    completed++;
+                }
+            }
+            
+            document.getElementById('totalAmount').textContent = `NT$ ${total.toLocaleString()}`;
+            document.getElementById('progress').textContent = `已完成 ${completed} / 365 天`;
+        }
+        
+        // 重置所有進度
+        function resetAll() {
+            if (confirm('確定要重置所有進度嗎？此操作無法復原。')) {
+                checkedDays = {};
+                localStorage.removeItem('savings365');
+                document.getElementById('daysGrid').innerHTML = '';
+                createDaysGrid();
+                updateStats();
+            }
+        }
+        
+        // 初始化
+        createDaysGrid();
+        updateStats();
+    </script>
+</body>
+</html>
